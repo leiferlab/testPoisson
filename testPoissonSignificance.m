@@ -59,16 +59,12 @@ function pvalue=testPoissonSignificance(k1,k2,n1,n2,d,iside)
 
 
 	elhatk = (k1+k2)/(n1+n2)-d*n1/(n1+n2);
-    disp(['elhatk is ' num2str(elhatk)]);
 	
     var = (k1/ (n1^2) + k2/(n2^2));
-    disp(['var is ' num2str(var)]);
 	
     t_k1k2 = (k1/n1-k2/n2-d)/sqrt(var);
-    disp(['t_k1k2 is ' num2str(t_k1k2)]);
     
 	pvalue=poistest(iside, n1, n2, elhatk, t_k1k2, d);
-    disp(['The p-value is ' num2str(pvalue)]);
     
 end
 
@@ -82,9 +78,8 @@ function pvalue=poistest(iside, n1, n2, elhatk, t_k1k2, d)
 % computing estimates of el1*n1 and el2*n2 under H_0
     pvalue=0; 
     elhat1=n1*(elhatk+d);
-        disp(['elhat1 is ' num2str(elhat1)]);
 	elhat2 = n2*elhatk;
-        disp(['elhat2 is ' num2str(elhat2)]);
+        
 
 
 % computing the modes 
@@ -94,22 +89,17 @@ function pvalue=poistest(iside, n1, n2, elhatk, t_k1k2, d)
 % initializing the probability at the i1mode
 	pi1mode = poipr(i1mode, elhat1);
 	pi1 = pi1mode;
-          disp(['pi1 is ' num2str(pi1)]);
 
     
 % initializing the probability at the i2mode
-    disp('initializing the probability at the i2mode');
 	pi2mode = poipr(i2mode, elhat2)    ;
-        disp(['pi2mode is',num2str(pi2mode)]);
         
     
     for i1=[i1mode:1000] 
         if (pi1 < 1e-7)       
           break;  
         end
-        disp('about to call sumi2');
         pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d,pvalue);
-        disp(['pvalue after call to sumi2 is ' num2str(pvalue)]);
 	  pi1 = elhat1*pi1/(i1+1);
     end 
 
@@ -117,20 +107,18 @@ function pvalue=poistest(iside, n1, n2, elhatk, t_k1k2, d)
 
     %Label #1 
     i1 = i1mode-1;
-        disp(['in label 1 i1 is now ' num2str(i1)]);
     pi1 = pi1mode;
 	pi1 = i1mode*pi1/elhat1;
 	
 	for i1 = [i1mode-1:-1: 0]
 	  if(pi1 < 1e-7) 
-          disp('pi1 <1e-7!!');
           return;
       end
 	  pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d,pvalue);
 	  pi1 = i1*pi1/elhat1;
     end
 	
-    disp(['at the end of poistest pi1 is now' num2str(pi1)]);
+  
 end
 
 
@@ -144,8 +132,6 @@ end
 function pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d, pvalue)
 
 	pi2 = pi2mode;
-	disp(['pvalue just inside sumi2 is ' num2str(pvalue)]);
-	disp(['d just inside sum is'  num2str(d)]);
 
 	for i2 = (i2mode:1000)
 	  if(pi2 < 1.0e-07) 
@@ -155,7 +141,6 @@ function pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d
 	  elhati2 = 1.0e0*i2/n2;
       
 	  diffi = elhati1 - elhati2 - d ;
-	  disp(['diffi is ' num2str(diffi)]);
 	  var = (1.0e0*elhati1/n1 + 1.0e0*elhati2/n2);
 	  if(iside == 1)     
         if(1.0e0*i1/n1 - 1.0e0*i2/n2 <= d)
@@ -167,9 +152,6 @@ function pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d
             pvalue = pvalue + pi1*pi2;
         end
 	  elseif(iside == 2)
-	    disp(['entering double tail pvalue is' num2str(pvalue)]);  
-		disp(['entering double tail pi1 is' num2str(pi1)]);
-		disp(['entering double tail pi2 is' num2str(pi2)]);
 	    if(abs(1.0e0*i1/n1 - 1.0e0*i2/n2) <= d) 
 	      t_i1i2 = 0.0e0;
 	    else
@@ -178,7 +160,6 @@ function pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d
 	    if(abs(t_i1i2) >= abs(t_k1k2)) 
             pvalue = pvalue + pi1*pi2;
         end
-		disp(['pvalue inside iside2 loop is' num2str(pvalue)]);
       end
 	  pi2 = elhat2*pi2/(i2+1.0e0);
 	end
@@ -186,11 +167,6 @@ function pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d
     i2 = i2mode-1 ;
 	pi2 = pi2mode;
 	pi2 = i2mode*pi2/elhat2;
-        disp(['pi1 at end of label 1 is' num2str( pi1)]);
-		disp(['pi2 at end of label 1 is' num2str( pi2)]);
-		disp([ 't_i1i2 at end of label 1 is' num2str( t_i1i2)]);
-		disp(['t_k1k2 at end of label 1 is' num2str( t_k1k2)]);
-		disp(['pvalue at end of label 1 is' num2str( pvalue)]);
 
 	for i2 = ( (i2mode-1):-1:  0)
 	  if(pi2 < 1.0e-07) 
@@ -221,12 +197,6 @@ function pvalue=sumi2(iside, n1, n2, elhat2, t_k1k2, i1, pi1, i2mode, pi2mode, d
 	  end 
 	  pi2 = i2*pi2/elhat2;
     end
-	disp(['pi1 at end of sumi2 is' num2str( pi1 )]);
-	disp(['pi2 at end of sumi2 is' num2str( pi2)]);
-	disp(['t_i1i2 at end of sumi2 is' num2str( t_i1i2)]);
-	disp(['t_k1k2 at end of sumi2 is' num2str( t_k1k2)]);
-	disp([ 'pvalue at end of sumi2 is' num2str( pvalue)]);
-	disp( '============');
 	end
 
 
