@@ -18,22 +18,26 @@ Here is a quick and dirty port of  their fortran code to MATLAB. Note I kept all
 The matlab function ```testPoissonSignificance()``` is described below:
 
 
-```function pvalue=testPoissonSignificance(k1,k2,n1,n2,d,iside)
+```
+function pvalue=testPoissonSignificance(k1,k2,n1,n2,d,iside)
 % function pvalue=testPoissonSignificance(k1,k2,n1,n2,d,iside)
 %
 %  k1, k2   = sample counts (must be integer)
 %  n1, n2   = sample size (must be integer)
 %  d        = value of mean1-mean2 under H0  (default is zero)
-%  iside    = 1 for right tail-test or 2 for two-tail test (default) ```
+%  iside    = 1 for right tail-test or 2 for two-tail test (default)
+```
 
 
 To use the example from Przyborowski and Wilenski (1940): a factory spec's their supply of clover seeds to have no dodder seed contaminantes in a 100g sample. Upon receiving  shipment, the purchaser takes a 100g sample and finds 3 dodder seeds.  The purchaser wishes to determine if the difference could not be due to chance.  k1=0, k2-=3, n1=n2=1, d=0, and iside=2 for the two tail test.
 
-```>> pvalue=testPoissonSignificance(0,3,1,1,0,2)
+```
+>> pvalue=testPoissonSignificance(0,3,1,1,0,2)
 
 pvalue =
 
     0.0884
+```
 
 
  
