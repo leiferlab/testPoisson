@@ -24,4 +24,4 @@ The matlab function ```testPoissonSignificance()``` is described below:
 %  k1, k2   = sample counts (must be integer)
 %  n1, n2   = sample size (must be integer)
 %  d        = value of mean1-mean2 under H0  (default is zero)
-%  iside    = 1 for right tail-test or 2 for two-tail test (default)```
+%  iside    = 1 for right tail-test or 2 for two-tail test (default)
